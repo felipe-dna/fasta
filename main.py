@@ -2,7 +2,9 @@ from typing import List
 
 from Bio import SeqIO
 
-database_file = 'cat14.fa'
+fasta_file = 'cat14.fa'
+output_file = 'output.fa'
+database_file = 'hitdata.txt'
 
 
 class Item:
@@ -21,7 +23,7 @@ def clear_line(entire_line: str):
 def get_hitdata():
     print('Retrieving the hitdata.txt data...')
     items = []
-    with open('hitdata.txt', 'r') as file:
+    with open(database_file, 'r') as file:
         for index, line in enumerate(file):
             if index > 7:
                 items.append(clear_line(line))
@@ -38,17 +40,12 @@ class Proteina:
 def get_cat_data():
     items = []
     print('Retrieving the fasta file data...')
-    fasta_sequences = SeqIO.parse(open('cat14.fa'), 'fasta')
+    fasta_sequences = SeqIO.parse(open(fasta_file), 'fasta')
     for fasta in fasta_sequences:
         items.append(Proteina(id=fasta.id, sequence=str(fasta.seq)))
 
     print('Done...')
     return items
-
-
-def write_on_file(proteina: Proteina):
-    with open('output.fa', 'w') as file:
-        file.write(f'{proteina.id}\n{proteina.sequence}')
 
 
 if __name__ == '__main__':
@@ -64,5 +61,5 @@ if __name__ == '__main__':
             final_data.append(f'>{proteina[0].id}\n{proteina[0].sequence[int(item.from_index) - 1 : int(item.to_index) - 1]}')
 
     final_string = '\n'.join(final_data)
-    with open('output.fa', 'w') as file:
+    with open(output_file, 'w') as file:
         file.write(final_string)
